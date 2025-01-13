@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('envios', function (Blueprint $table) {
             $table->id();
             $table->string('cantidad_send');
+            $table->date('date_contrated');
             $table->timestamps();
         });
     }
