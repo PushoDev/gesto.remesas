@@ -7,7 +7,6 @@ use App\Filament\Resources\FamiliarResource\RelationManagers;
 use App\Models\Familiar;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\TagsInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -33,7 +32,8 @@ class FamiliarResource extends Resource
     {
         return $form
             ->schema([
-                // Cliente
+                // Cliente que Contrata
+
                 Forms\Components\Select::make('cliente_id')
                     ->relationship('cliente', 'name_cliente')
                     ->label('Servicio Contratado por:')
@@ -62,22 +62,36 @@ class FamiliarResource extends Resource
                             ->numeric()
                             ->required(),
                     ]),
-                // Transformated
-                Forms\Components\TagsInput::make('date_contrated')
-                    ->label('Fecha de Contrato')
-                    ->separator(','),
-
-                Forms\Components\TagsInput::make('cant_envio')
-                    ->label('Cantidad que Envía')
-                    ->separator(','),
-
-                // Originals
-                // Forms\Components\Textarea::make('date_contrated')
-                // ->columnSpanFull(),
-                // Forms\Components\Textarea::make('cant_envio')
-                // ->columnSpanFull(),
-
-                // Cotidianos
+                // Fecha del Servicio
+                Forms\Components\Select::make('envio_id')
+                    ->label('Fecha del Servicio')
+                    ->relationship('envios', 'date_contrated')
+                    ->required()
+                    ->createOptionForm([
+                        // Fecha
+                        Forms\Components\DatePicker::make('date_contrated')
+                            ->label('Fecha de Servicio')
+                            ->date()
+                            ->required(),
+                        // Cant Envía
+                        Forms\Components\TextInput::make('cantidad_send')
+                            ->label('Cantidad a Enviar')
+                            ->numeric()
+                            ->required(),
+                    ]),
+                Forms\Components\Select::make('envio_id')
+                    ->label('Monto a Enviar')
+                    ->relationship('envios', 'cantidad_send')
+                    ->required()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('cantidad_send')
+                            ->label('Cantidad a Enviar')
+                            ->required(),
+                        Forms\Components\DatePicker::make('date_contrated')
+                            ->label('Fecha de Servicio')
+                            ->date()
+                            ->required(),
+                    ]),
                 Forms\Components\TextInput::make('city_familiar')
                     ->label('Municipio o Lacalidad'),
                 Forms\Components\TextInput::make('name_familiar')
@@ -124,6 +138,9 @@ class FamiliarResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('cliente.id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('envio_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('mensajero.id')

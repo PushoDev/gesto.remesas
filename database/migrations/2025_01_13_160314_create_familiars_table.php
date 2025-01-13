@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             // Clients Send Services
             $table->foreignId('cliente_id')->constrained('clientes')->cascadeOnDelete();
-            // Cantidad Send
-            $table->foreignId('envio_id')->constrained('envios')->cascadeOnDelete();
-            // Messager Asigned
+            // Cantidad y Fecha de Contrato for  Send
+            $table->json('date_contrated')->nullable();
+            $table->json('cant_envio')->nullable();
             $table->foreignId('mensajero_id')->constrained('mensajeros')->cascadeOnDelete();
             $table->string('city_familiar')->nullable();
             $table->string('name_familiar')->nullable();
-            $table->string('phone_familiar')->nullable()->unique();
+            $table->string('phone_familiar')->nullable();
             $table->string('address_familiar')->nullable();
             $table->string('transaccion')->nullable();
             $table->string('type_efectivo')->nullable();

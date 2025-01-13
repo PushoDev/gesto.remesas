@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Familiar extends Model
 {
@@ -13,7 +14,8 @@ class Familiar extends Model
 
     protected $fillable = [
         'cliente_id',
-        'envio_id',
+        'date_contrated',
+        'cant_envio',
         'mensajero_id',
         'city_familiar',
         'name_familiar',
@@ -26,6 +28,11 @@ class Familiar extends Model
         'send_reseived',
     ];
 
+    protected $casts = [
+        'date_contrated' => 'array',
+        'cant_envio' => 'array',
+    ];
+
     // Ingresar Cliente
     public function cliente(): BelongsTo
     {
@@ -36,11 +43,5 @@ class Familiar extends Model
     public function mensajero(): BelongsTo
     {
         return $this->belongsTo(Mensajeros::class);
-    }
-
-    // Servicio Contratado
-    public function envios(): BelongsTo
-    {
-        return $this->belongsTo(Envios::class);
     }
 }
