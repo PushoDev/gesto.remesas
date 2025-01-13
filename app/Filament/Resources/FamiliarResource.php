@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Forms\Components\TagsInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -71,13 +73,6 @@ class FamiliarResource extends Resource
                     ->label('Cantidad que Envía')
                     ->separator(','),
 
-                // Originals
-                // Forms\Components\Textarea::make('date_contrated')
-                // ->columnSpanFull(),
-                // Forms\Components\Textarea::make('cant_envio')
-                // ->columnSpanFull(),
-
-                // Cotidianos
                 Forms\Components\TextInput::make('city_familiar')
                     ->label('Municipio o Lacalidad'),
                 Forms\Components\TextInput::make('name_familiar')
@@ -123,37 +118,64 @@ class FamiliarResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cliente.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('cliente.name_cliente')
+                    ->searchable()
+                    ->label('Clientes')
+                    ->color('primary')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('mensajero.id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('mensajero.name_messager')
+                    ->label('Mensajero')
+                    ->color('warning')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('city_familiar')
+                    ->label('Localidad')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name_familiar')
+                    ->label('Recive')
+                    ->color('success')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_familiar')
+                    ->label('No . Contacto')
+                    ->icon('heroicon-m-phone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address_familiar')
+                    ->label('Dirección')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('transaccion')
+                    ->label('Operación')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'efectivo' => 'success',
+                        'transferencia' => 'primary',
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type_efectivo')
+                    ->label('Tipo de Efectivo')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type_transferencia')
+                    ->label('Tipo de Transferencia')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('card_familiar')
+                    ->label('No. de Tarjeta')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('received_familiar')
+                    ->label('Recibe')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('send_reseived')
+                    ->label('Terminado')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Primera Operación')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Últimas Operaciones')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -162,7 +184,12 @@ class FamiliarResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->iconButton(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
