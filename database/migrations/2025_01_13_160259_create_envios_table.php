@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('envios', function (Blueprint $table) {
             $table->id();
-            $table->string('cantidad_send');
-            $table->date('date_contrated');
+            $table->string('cantidad_send')->nullable();
+            $table->date('date_contrated')->nullable();
             $table->timestamps();
         });
     }
